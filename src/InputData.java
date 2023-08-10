@@ -8,7 +8,7 @@ public class InputData implements Inputable,Writable{
         this.people = new People();
     }
     @Override
-    public String input() throws RuntimeException {
+    public void input() throws RuntimeException {
         while(true) {
             System.out.println("Введите данные через пробел в любом порядке. Они должны содеражть Фамилию, Имя, " +
                     "Отчество, дату рождения (в формате дд/мм/гггг), номер мобильного телефона (11 чисел) и " +
@@ -27,7 +27,7 @@ public class InputData implements Inputable,Writable{
                 people.setName(checkName(inputDataFromUser));
                 write(people.getSurname());
                 scanner.close();
-                return inputDataFromUser;
+                return;
             } catch (RuntimeException | IOException e) {
                 System.out.println(e.getMessage());
             }
@@ -36,8 +36,9 @@ public class InputData implements Inputable,Writable{
     @Override
     public void write(String name) throws RuntimeException, IOException {
         FileWriter writer = new FileWriter(name, true);
-        writer.write(people.toString());
+        writer.write(people.toString() + "\n");
         writer.close();
+        System.out.println("Запись в файл завершена!");
     }
     private Gender checkGender(String data) {
         int count = 0;
@@ -141,13 +142,17 @@ public class InputData implements Inputable,Writable{
     }
     private String checkDateOfBirth(String str) {
         String res = "";
+        LocalDate dateStop = LocalDate.now();
+        LocalDate dateStart = LocalDate.of(1900,1,1);
         for (String i : str.split(" ")) {
-            if (isDate(i)) {
+            if (isDate(i) && LocalDate.parse(i, DateTimeFormatter.ofPattern("dd.MM.yyyy")).isBefore(dateStop)
+            && LocalDate.parse(i, DateTimeFormatter.ofPattern("dd.MM.yyyy")).isAfter(dateStart)) {
                 res = i;
             }
         }
         if (res.equals("")) {
-            throw new RuntimeException("Отсутствует Дата рождения! Либо неправильно указана! Попробуйте еще!");
+            throw new RuntimeException("Отсутствует Дата рождения! Либо неправильно указана! Либо не в диапазоне " +
+                    "01.01.1900 - актуальная дата! Попробуйте еще!");
         } else {
             return res;
         }

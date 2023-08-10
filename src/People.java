@@ -15,18 +15,6 @@ public class People {
     }
     public People() {
     }
-    public String getName() {
-        return name;
-    }
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
-    public long getPhoneNumber() {
-        return phoneNumber;
-    }
-    public Gender getGender() {
-        return gender;
-    }
     public String getSurname() {
         return surname;
     }
